@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Проверка работы</h1>
+<p class="intro">Вставьте код или загрузите файл работы.</p>
+{% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+<form action="/submit" method="post" enctype="multipart/form-data">
+    <section class="card">
+      <label for="code">Код работы <span>C# / текст</span></label>
+      <p class="hint" id="code-hint">Вставьте код или выберите файл под полем.</p>
+      <textarea id="code" name="source_code" aria-describedby="code-hint" maxlength="131072" spellcheck="false">{{ code }}</textarea>
+      <label class="file-label" for="source-file">Загрузить файл .cs или .txt · UTF-8 · до 128 КБ</label>
+      <input id="source-file" type="file" name="source_file" accept=".cs,.txt" aria-describedby="file-hint">
+      <p class="hint" id="file-hint">Если выбран файл, сервер отправит его содержимое вместо текста в поле.</p>
+    </section>
+  <div class="submit-row"><button type="submit">Отправить работу</button></div>
+</form>
+{% endblock %}
