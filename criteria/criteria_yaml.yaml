@@ -1,0 +1,206 @@
+schema_version: "1.0"
+language: "ru"
+description: "Критерии приёмки лабораторных и практических работ для автоматизированной оценки решений."
+evaluation_contract:
+  status_values:
+    - "passed"
+    - "failed"
+    - "partial"
+    - "not_checked"
+  default_weight: 1
+  score_formula: "sum(weight for passed criteria) / sum(weight for assessed criteria) * 100"
+  rules:
+    - "Оценивай только по критериям выбранного задания."
+    - "Для каждого статуса приводи конкретное доказательство из кода или результатов тестирования."
+    - "Если критерий требует запуска, а результаты запуска не предоставлены, используй not_checked."
+    - "Не выдумывай требования, которых нет в критериях."
+assignments:
+  -
+    id: "manipulator"
+    title: "Лабораторная работа «Манипулятор»"
+    source_file: "Лабораторная работа 1.docx"
+    criteria:
+      -
+        id: "M01"
+        name: "Реализован требуемый метод"
+        condition: "В классе AnglesToCoordinatesTask присутствует метод GetJointPositions(double shoulder, double elbow, double wrist), возвращающий Point[]."
+        check_type: "static_code"
+        weight: 1
+      -
+        id: "M02"
+        name: "Рассчитана координата локтя"
+        condition: "Координаты локтя вычисляются относительно начала координат (0, 0) с использованием длины Manipulator.UpperArm и угла shoulder: x = UpperArm·cos(shoulder), y = UpperArm·sin(shoulder)."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "M03"
+        name: "Рассчитана координата запястья"
+        condition: "Координата запястья вычисляется относительно локтя с использованием Manipulator.Forearm и корректного угла, учитывающего shoulder и elbow."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "M04"
+        name: "Рассчитан конец ладони"
+        condition: "Координата конца ладони вычисляется относительно запястья с использованием Manipulator.Palm и корректного угла, учитывающего предыдущие углы."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "M05"
+        name: "Используются размеры манипулятора"
+        condition: "Для расчётов используются константы Manipulator.UpperArm, Manipulator.Forearm и Manipulator.Palm, а не числовые значения длин."
+        check_type: "static_code"
+        weight: 1
+      -
+        id: "M06"
+        name: "Соблюдается структура результата"
+        condition: "Метод возвращает массив из трёх точек в правильном порядке: локоть, запястье, конец ладони."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "M07"
+        name: "Реализованы модульные тесты"
+        condition: "В AnglesToCoordinatesTask_Tests присутствуют тесты, проверяющие все принципиальные случаи из задания, включая различные комбинации углов."
+        check_type: "test_code"
+        weight: 1
+      -
+        id: "M08"
+        name: "Тесты проверяют не только наличие результата"
+        condition: "Тесты проверяют расстояния между суставами и ожидаемые координаты конечной точки с допустимой погрешностью, после чего проходят без ошибок."
+        check_type: "test_execution"
+        weight: 1
+  -
+    id: "earth_and_digger"
+    title: "Практика «Земля и Диггер»"
+    source_file: "Лабораторная работа 2.docx"
+    criteria:
+      -
+        id: "D01"
+        name: "Реализация интерфейса"
+        condition: "Классы Terrain и Player реализуют ICreature."
+        check_type: "static_code"
+        weight: 1
+      -
+        id: "D02"
+        name: "Изображение объектов"
+        condition: "Terrain возвращает \"Terrain.png\", а Player - \"Digger.png\"."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "D03"
+        name: "Приоритет отрисовки"
+        condition: "Terrain имеет приоритет 1, Player - 0, как в предоставленном решении."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "D04"
+        name: "Поведение Terrain"
+        condition: "Метод Act не изменяет положение объекта и возвращает пустую команду."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "D05"
+        name: "Перемещение игрока"
+        condition: "Игрок реагирует на клавиши Up, Down, Left, Right."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "D06"
+        name: "Ограничение игрового поля"
+        condition: "Игрок не может переместиться за границы Game.MapWidth и Game.MapHeight."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "D07"
+        name: "Удаление земли"
+        condition: "При столкновении с игроком объект Terrain уничтожается, а Player остаётся жив."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "D08"
+        name: "Корректность команд"
+        condition: "Метод Act возвращает корректный CreatureCommand, а при отсутствии подходящей клавиши игрок остаётся на месте."
+        check_type: "static_code_or_test"
+        weight: 1
+  -
+    id: "benchmark"
+    title: "Практика «Benchmark»"
+    source_file: "Лабораторная работа 3.docx"
+    criteria:
+      -
+        id: "B01"
+        name: "Реализация интерфейса"
+        condition: "Класс Benchmark реализует IBenchmark и содержит метод MeasureDurationInMs(ITask task, int repetitionCount)."
+        check_type: "static_code"
+        weight: 1
+      -
+        id: "B02"
+        name: "Прогрев JIT"
+        condition: "До начала измерения вызывается task.Run() минимум один раз."
+        check_type: "static_code"
+        weight: 1
+      -
+        id: "B03"
+        name: "Сборщик мусора"
+        condition: "Перед измерением вызываются GC.Collect() и GC.WaitForPendingFinalizers()."
+        check_type: "static_code"
+        weight: 1
+      -
+        id: "B04"
+        name: "Измерение времени"
+        condition: "Для замера используется Stopwatch или эквивалентный высокоточный механизм измерения времени."
+        check_type: "static_code"
+        weight: 1
+      -
+        id: "B05"
+        name: "Повторение операций"
+        condition: "task.Run() выполняется ровно repetitionCount раз в измеряемом цикле."
+        check_type: "static_code"
+        weight: 1
+      -
+        id: "B06"
+        name: "Расчёт результата"
+        condition: "Возвращается среднее время одного выполнения в миллисекундах: общее время делится на repetitionCount."
+        check_type: "static_code_or_test"
+        weight: 1
+      -
+        id: "B07"
+        name: "Реализация двух задач"
+        condition: "Созданы две реализации ITask: одна использует StringBuilder.Append() и ToString(), другая — new string('a', 10000)."
+        check_type: "static_code"
+        weight: 1
+      -
+        id: "B08"
+        name: "Сравнительный тест"
+        condition: "NUnit-тест StringConstructorFasterThanStringBuilder использует Assert.Less и проверяет, что специализированный конструктор работает быстрее StringBuilder."
+        check_type: "test_code_and_execution"
+        weight: 1
+backend_prompt_template:
+  role: "Ты - ассистент проверки лабораторных работ. Оцени решение по критериям выбранного задания."
+  input_fields:
+    assignment_id: "ID задания из assignments"
+    student_submission: "Код, файлы или текст решения"
+    test_results: "Необязательные результаты сборки и запуска тестов"
+  instructions:
+    - "Выбери задание по assignment_id и используй только его критерии."
+    - "Проверь каждый критерий отдельно и верни статус passed, failed, partial или not_checked."
+    - "Для каждого критерия укажи evidence и краткое объяснение."
+    - "Не утверждай, что тесты проходят, если результаты запуска не предоставлены."
+    - "Итоговый процент считай по проверенным критериям; not_checked показывай отдельно."
+    - "Для failed и partial предложи конкретное исправление."
+  output_schema:
+    assignment_id: "string"
+    overall_score_percent: "number or null"
+    passed_count: "integer"
+    failed_count: "integer"
+    partial_count: "integer"
+    not_checked_count: "integer"
+    results:
+      -
+        criterion_id: "string"
+        status: "passed | failed | partial | not_checked"
+        evidence: "string"
+        explanation: "string"
+        suggested_fix: "string or null"
+    summary: "string"
+    next_steps:
+      - "string"
