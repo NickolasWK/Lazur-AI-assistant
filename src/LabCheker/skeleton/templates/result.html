@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% set waiting = evaluation.status in ['pending', 'processing'] %}
+{% block title %}Работа №{{ evaluation.id }} · Lazur{% endblock %}
+{% block head %}{% if waiting %}<meta http-equiv="refresh" content="1">{% endif %}{% endblock %}
+{% block content %}
+<h1>Работа №{{ evaluation.id }}</h1>
+{% set labels = {'pending': 'В очереди', 'processing': 'Обрабатывается', 'completed': 'Готово', 'failed': 'Ошибка'} %}
+<p class="intro">Статус: <strong role="status">{{ labels.get(evaluation.status, evaluation.status) }}</strong></p>
+{% if waiting %}
+<section class="card"><h2>Работа принята</h2><p>Ожидайте результат. Страница обновляется автоматически.</p><a href="/evaluations/{{ evaluation.id }}">Обновить сейчас</a></section>
+{% elif evaluation.status == 'failed' %}
+<div class="error" role="alert">{{ result.error_message }}</div>
+{% else %}
+<section class="card report"><h2>Результат</h2><p>{{ result.result_json.summary }}</p>
+  <div class="table-scroll"><table><thead><tr><th>Критерий</th><th>Результат</th></tr></thead><tbody>
+  {% for item in result.result_json.criteria %}<tr><td>{{ item.criterion }}</td><td><span class="pill">Нет данных</span><p class="hint">{{ item.explanation }}</p></td></tr>{% endfor %}
+  </tbody></table></div>
+  <details><summary>Ответ в JSON</summary><pre>{{ result.result_json | tojson(indent=2) }}</pre></details>
+  <details><summary>Отчёт в Markdown</summary><pre>{{ result.feedback_markdown }}</pre></details>
+</section>
+{% endif %}
+<details class="card"><summary>Отправленные данные</summary><h2>Критерии</h2><pre>{{ evaluation.criteria_markdown }}</pre><h2>Код работы</h2><pre>{{ evaluation.source_code }}</pre></details>
+<div class="submit-row"><a class="button" href="/">Отправить ещё одну работу</a><a href="/api/evaluations/{{ evaluation.id }}/result">Открыть результат API</a></div>
+{% endblock %}
